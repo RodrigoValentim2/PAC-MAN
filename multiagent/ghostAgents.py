@@ -50,6 +50,8 @@ class DirectionalGhost( GhostAgent ):
         self.prob_scaredFlee = prob_scaredFlee
         
         print("# Construct distribution")
+    def comunicacao(self, GhostAgent):
+        pass
 
     def getDistribution( self, state ):
         # Read variables from state
@@ -68,7 +70,7 @@ class DirectionalGhost( GhostAgent ):
         # Select best actions given the state
         distancesToPacman = [manhattanDistance(pos, pacmanPosition ) for pos in newPositions]
         if isScared:
-            bestScore = max( distancesToPacman )
+            bestScore = min( distancesToPacman )
             bestProb = self.prob_scaredFlee
         else:
             

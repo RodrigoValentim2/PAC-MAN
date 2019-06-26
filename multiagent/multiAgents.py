@@ -191,7 +191,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
             if agent != 0: 
                 depth += 1
                 # maximize for GHOST
-                return max(minimax(0, depth, gameState.generateSuccessor(agent, newState)) for newState in gameState.getLegalActions(1))
+                return max(minimax(0, depth, gameState.generateSuccessor(1, newState)) for newState in gameState.getLegalActions(1))
         
 
         """Performing maximize action for the root node i.e. pacman"""
