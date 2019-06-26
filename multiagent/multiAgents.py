@@ -191,18 +191,20 @@ class MinimaxAgent(MultiAgentSearchAgent):
             if agent != 0: 
                 depth += 1
                 # maximize for GHOST
-                return max(minimax(0, depth, gameState.generateSuccessor(1, newState)) for newState in gameState.getLegalActions(1))
+                return max(minimax(0, depth, gameState.generateSuccessor(agent, newState)) for newState in gameState.getLegalActions(agent))
         
 
         """Performing maximize action for the root node i.e. pacman"""
-        maximum = float("-inf")
-        action = Directions.WEST
-        for agentState in gameState.getLegalActions(1):
-            utility = minimax(0, 1, gameState.generateSuccessor(1, agentState))
-            if utility > maximum or maximum == float("-inf"):
-                maximum = utility
-                action = agentState
-                print(action)
+        agent = 1       
+        if agent != 0:
+            maximum = float("-inf")
+            action = Directions.WEST
+            for agentState in gameState.getLegalActions(1):
+                utility = minimax(0, agent, gameState.generateSuccessor(agent, agentState))
+                if utility > maximum or maximum == float("-inf"):
+                    maximum = utility
+                    action = agentState
+                    print(action)
 
         return random.choice(gameState.getLegalActions(0))
         # if gameState.isWin() or gameState.isLose():
