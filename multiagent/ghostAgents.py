@@ -189,8 +189,6 @@ class MinimaxGhosts(GhostAgent):
             pos, pacmanPosition) for pos in newPositions]
 
         if (isScared or (any(message == 1 for message in self.mesage_board))):
-            print('Message list:', self.mesage_board)
-            raw_input()
             bestScore = max(distancesToPacman)
             bestProb = self.prob_scaredFlee
         else:

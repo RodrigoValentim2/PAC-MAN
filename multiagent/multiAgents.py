@@ -284,13 +284,55 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
 
     def getAction(self, gameState):
         """
-          Returns the expectimax action using self.depth and self.evaluationFunction
-
-          All ghosts should be modeled as choosing uniformly at random from their
-          legal moves.
+         Returns the expectimax action using self.depth and self.evaluationFunction
+         All ghosts should be modeled as choosing uniformly at random from their
+         legal moves.
         """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        if gameState.isWin() or gameState.isLose():
+            return Directions.STOP
+        nextMoves = gameState.getLegalPacmanActions()
+        num = gameState.getNumAgents() - 1
+        value = float("-inf")
+        chosenMove = Directions.STOP
+        for move in nextMoves:
+            nextState = gameState.generatePacmanSuccessor(move)
+            if nextState.isWin():
+                return move  # win the game immediately if it can
+            score = self.moveGhost(nextState, num, 1)
+            if score > value:
+                value = score
+                chosenMove = move
+        return chosenMove
+
+    def moveAgent(self, gameState, depth):
+        if gameState.isWin() or gameState.isLose():
+            return self.evaluationFunction(gameState)
+        nextMoves = gameState.getLegalPacmanActions()
+        nextStates = [gameState.generatePacmanSuccessor(
+            action) for action in nextMoves]
+        num = gameState.getNumAgents() - 1
+        scores = [self.moveGhost(nextState, num, depth + 1)
+                  for nextState in nextStates]
+        return max(scores)  # return the best choice of pacman
+
+    def moveGhost(self, gameState, ghostNum, depth):
+        if gameState.isWin() or gameState.isLose():
+            return self.evaluationFunction(gameState)
+        nextMoves = gameState.getLegalActions(ghostNum)
+        num = ghostNum - 1
+        nextStates = [gameState.generateSuccessor(
+            ghostNum, move) for move in nextMoves]
+        if num == 0:
+            if depth == self.depth:
+                scores = [self.evaluationFunction(
+                    nextState) for nextState in nextStates]
+            else:
+                scores = [self.moveAgent(nextState, depth)
+                          for nextState in nextStates]
+        else:
+            scores = [self.moveGhost(nextState, num, depth)
+                      for nextState in nextStates]
+        return sum(scores) / len(scores)
 
 
 def betterEvaluationFunction(currentGameState):
