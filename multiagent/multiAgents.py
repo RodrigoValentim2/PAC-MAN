@@ -144,42 +144,10 @@ class MultiAgentSearchAgent(Agent):
 
 
 class MinimaxAgent(MultiAgentSearchAgent):
-    """
-      Your minimax agent (question 2)
-    """
 
     def getAction(self, gameState):
-        """
-          Returns the minimax action from the current gameState using self.depth
-          and self.evaluationFunction.
 
-          Here are some method calls that might be useful when implementing minimax.
-
-          gameState.getLegalActions(agentIndex):
-            Returns a list of legal actions for an agent
-            agentIndex=0 means Pacman, ghosts are >= 1
-
-          gameState.generateSuccessor(agentIndex, action):
-            Returns the successor game state after an agent takes an action
-
-          gameState.getNumAgents():
-            Returns the total number of agents in the game
-        """
         def minimax(agent, depth, gameState):
-
-            print("Se")
-
-            """print(depth)
-            
-            gost1 = gameState.getGhostPositions()            
-            print(gost1)
-            newPos = gameState.getPacmanPosition()
-            distance = util.manhattanDistance(gost1[0],  newPos)
-            
-            min_pac= -1
-            if min_pac >= distance or min_pac == -1:
-                min_pac = distance
-            self.moveGhost(gameState , 2 , depth)"""
 
             # return the utility in case the defined depth is reached or the game is won/lost.
             if gameState.isLose() or gameState.isWin() or depth == self.depth:
@@ -196,35 +164,19 @@ class MinimaxAgent(MultiAgentSearchAgent):
         print('Game State:', gameState.getNumAgents())
 
         for agent in range(1, gameState.getNumAgents()):
+            print('Numero do agente:', agent)
             if agent != 0:
                 maximum = float("-inf")
                 action = Directions.WEST
                 for agentState in gameState.getLegalActions(agent):
                     utility = minimax(
-                        0, agent, gameState.generateSuccessor(agent, agentState))
+                        agent, 0, gameState.generateSuccessor(agent, agentState))
                     if utility > maximum or maximum == float("-inf"):
                         maximum = utility
                         action = agentState
                         print(action)
 
         return random.choice(gameState.getLegalActions(0))
-        # if gameState.isWin() or gameState.isLose():
-        #   return Directions.STOP
-
-        # nextMoves = gameState.getLegalPacmanActions()
-        # num = gameState.getNumAgents() - 1
-        # value = -BIGNUM
-        # chosenMove = Directions.STOP
-
-        # for move in nextMoves:
-        #     nextState = gameState.generatePacmanSuccessor(move)
-        #     if nextState.isWin():
-        #         return move  # win the game immediately if it can
-        #     score = self.moveGhost(nextState, num, 1)
-        #     if score > value:
-        #         value = score
-        #         chosenMove = move
-        # return chosenMove
 
     def moveAgent(self, gameState, depth):
         if gameState.isWin() or gameState.isLose():

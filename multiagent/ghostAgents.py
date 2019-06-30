@@ -123,10 +123,10 @@ class DirectionalGhost(GhostAgent):
         else:
             bestScore = min(distancesToPacman)
             bestProb = self.prob_attack
-        raw_input('cu')
+
         bestActions = [action for action, distance in zip(
             legalActions, distancesToPacman) if distance == bestScore]
-        print("# Construct distribution")
+
         # Construct distribution
         dist = util.Counter()
         for a in bestActions:
@@ -135,3 +135,117 @@ class DirectionalGhost(GhostAgent):
             dist[a] += (1-bestProb) / len(legalActions)
         dist.normalize()
         return dist
+
+
+class MinimaxGhosts(GhostAgent):
+    "A ghost that prefers to rush Pacman, or flee when scared."
+    # message codes:
+    # 1 - Danger zone
+
+    def __init__(self, index, prob_attack=0.8, prob_scaredFlee=0.99):
+        self.index = index
+        self.prob_attack = prob_attack
+        self.prob_scaredFlee = prob_scaredFlee
+        self.master = 1
+        self.depth = 2
+        self.mesage_board = []
+
+    def minimax(self, depth, agent, state):
+        print('Agent:', agent)
+        print('State:', state.getLegalActions())
+
+        speed = 1
+        legal_actions = state.getLegalActions()
+        actionVectors = [Actions.directionToVector(
+            a, speed) for a in legal_actions]
+
+        pos = state.getGhostPosition(self.index)
+
+        newPositions = [(pos[0]+a[0], pos[1]+a[1]) for a in actionVectors]
+
+        if state.isLose() or state.isWin() or depth == self.depth:
+            return self.evaluationFunction(state)
+        if agent != 0:
+            depth += 1
+            # maximize for GHOST
+            return max(self.minimax(0, depth, state.generateSuccessor(agent, newState)) for newState in state.getLegalActions(agent))
+
+    def evaluationFunction(self, state):
+
+        ghostState = state.getGhostState(self.index)
+        legalActions = state.getLegalActions(self.index)
+        isScared = ghostState.scaredTimer > 0
+        speed = 1
+
+        actionVectors = [Actions.directionToVector(
+            a, speed) for a in legalActions]
+
+        pos = state.getGhostPosition(self.index)
+
+        newPositions = [(pos[0]+a[0], pos[1]+a[1]) for a in actionVectors]
+
+        pacmanPosition = state.getPacmanPosition()
+        distancesToPacman = [manhattanDistance(
+            pos, pacmanPosition) for pos in newPositions]
+
+        if (isScared or (any(message == 1 for message in self.mesage_board))):
+            print('Message list:', self.mesage_board)
+            raw_input()
+            bestScore = max(distancesToPacman)
+            bestProb = self.prob_scaredFlee
+        else:
+            bestScore = min(distancesToPacman)
+            bestProb = self.prob_attack
+
+        bestActions = [action for action, distance in zip(
+            legalActions, distancesToPacman) if distance == bestScore]
+
+        # Construct distribution
+        dist = util.Counter()
+        for a in bestActions:
+            dist[a] = bestProb / len(bestActions)
+        for a in legalActions:
+            dist[a] += (1-bestProb) / len(legalActions)
+        dist.normalize()
+        print('Dist>', dist)
+        return dist
+
+    def comunicacao(self, GhostAgent, state):
+
+        pacmanPosition = state.getPacmanPosition()
+        danger_zones = state.getCapsules()
+
+        distancesToPoints = [manhattanDistance(
+            pos, pacmanPosition) for pos in danger_zones]
+
+        if(any(distance <= 1 for distance in distancesToPoints)):
+            self.mesage_board.append(1)
+        else:
+            if(len(self.mesage_board) > 0):
+                aux = list(set(self.mesage_board))
+                aux.remove(1)
+                self.mesage_board = aux
+
+    def getDistribution(self, state):
+        # Read variables from state
+        ghostState = state.getGhostState(self.index)
+        legalActions = state.getLegalActions(self.index)
+        isScared = ghostState.scaredTimer > 0
+        speed = 1
+        print('Agent', )
+        actionVectors = [Actions.directionToVector(
+            a, speed) for a in legalActions]
+        print(actionVectors)
+        pos = state.getGhostPosition(self.index)
+        print(pos)
+        newPositions = [(pos[0]+a[0], pos[1]+a[1]) for a in actionVectors]
+
+        print('Index:', self.index)
+
+        print('State:', state)
+
+        print('Minimax value', self.minimax(2, self.index, state))
+
+        self.comunicacao(self.index, state)
+
+        return self.minimax(2, self.index, state)
