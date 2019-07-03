@@ -314,6 +314,7 @@ class PacmanGameTreeTest(testClasses.TestCase):
         if stats['timeouts'] > 0:
             self.addMessage('Agent timed out on smallClassic.  No credit')
             return self.testFail(grades)
+            
         if stats['crashes'] > 0:
             self.addMessage('Agent crashed on smallClassic.  No credit')
             return self.testFail(grades)

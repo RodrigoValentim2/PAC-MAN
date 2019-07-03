@@ -42,6 +42,7 @@ The keys are 'a', 's', 'd', and 'w' to move (or arrow keys).  Have fun!
 from game import GameStateData
 from game import Game
 from game import Directions
+
 from game import Actions
 from util import nearestPoint
 from util import manhattanDistance
@@ -502,7 +503,7 @@ def readCommand( argv ):
                       help='Generate minimal output and no graphics', default=False)
     parser.add_option('-g', '--ghosts', dest='ghost',
                       help=default('the ghost agent TYPE in the ghostAgents module to use'),
-                      metavar = 'TYPE', default='RandomGhost')
+                      metavar = 'TYPE', default='DirectionalGhost')
     parser.add_option('-k', '--numghosts', type='int', dest='numGhosts',
                       help=default('The maximum number of ghosts to use'), default=4)
     parser.add_option('-z', '--zoom', type='float', dest='zoom',
