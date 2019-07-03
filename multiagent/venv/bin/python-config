@@ -1,4 +1,4 @@
-#!/home/rodrigo/Videos/agentes/multiagent 2/multiagent/venv/bin/python
+#!/home/rodrigo/Pictures/pacman/venv/bin/python
 
 import sys
 import getopt
